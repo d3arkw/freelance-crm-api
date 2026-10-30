@@ -6,6 +6,7 @@ django-filter==26.2
 djangorestframework==3.18.3
 djangorestframework_simplejwt==5.5.1
 drf-spectacular==0.30.0
+gunicorn==23.0.0
 factory_boy==3.3.3
 Faker==40.43.0
 inflection==0.5.1
