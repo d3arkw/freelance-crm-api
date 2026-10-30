@@ -1,6 +1,7 @@
 from django.utils.timezone import now
 from rest_framework import serializers
-from .models import Client,Order
+from .models import Client, Order
+
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,11 +9,12 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = ['owner', 'name', 'email', 'company', 'created_at']
         read_only_fields = ('owner',)
 
+
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['owner', 'client', 'title', 'status', 'deadline', 'budget', 'created_at']
-        read_only_fields = ('owner', )
+        read_only_fields = ('owner',)
 
     def validate_budget(self, budget):
         if budget <= 0:
@@ -25,4 +27,10 @@ class OrderSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('deadline cannot be less than today')
         return data
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
+        request = self.context.get("request")
+
+        if request and request.user.is_authenticated:
+            self.fields['client'].queryset = Client.objects.filter(owner=request.user)

@@ -219,3 +219,15 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 .idea/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Environment
+.env.*
+!.env.example
+
+# Virtual environment
+.venv/
+
