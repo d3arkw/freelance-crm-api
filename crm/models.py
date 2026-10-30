@@ -14,6 +14,7 @@ class Client(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['owner', 'email'], name='unique_client')]
+        ordering = ["-created_at", "id"]
 
     def __str__(self):
         return f"{self.name} ({self.email})"
@@ -24,9 +25,12 @@ class Order(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='orders')
     title = models.CharField(max_length=256)
     status = models.CharField(choices=STATUS_CHOICES, db_index=True, default=STATUS_CHOICES[0][0], max_length=20)
-    deadline = models.DateTimeField(null=True, db_index=True)
+    deadline = models.DateTimeField(null=True, db_index=True, blank=True)
     budget = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "id"]
 
 
 class Milestone(models.Model):
@@ -35,9 +39,14 @@ class Milestone(models.Model):
     due_date = models.DateTimeField(null=True)
     is_done = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ["id"]
+
 
 class Payment(models.Model):
     order = models.ForeignKey(Order, related_name="payments", on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     paid_at = models.DateTimeField(default=now)
 
+    class Meta:
+        ordering = ["-paid_at", "id"]
